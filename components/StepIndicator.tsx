@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AppStep } from '../types';
 
@@ -9,8 +8,7 @@ interface StepIndicatorProps {
 const steps = [
   { id: AppStep.GENERATE_IMAGE, title: 'Design' },
   { id: AppStep.GENERATE_METADATA, title: 'Describe' },
-  { id: AppStep.SET_PRICE, title: 'Set Price' },
-  { id: AppStep.LAUNCH_SUCCESS, title: 'Launch' },
+  { id: AppStep.SET_PRICE, title: 'Price & Launch' },
 ];
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {

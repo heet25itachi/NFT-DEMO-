@@ -1,16 +1,15 @@
-
 import React, { useState } from 'react';
 import type { NftData } from '../types';
 import { ChevronRightIcon } from './icons/ChevronRightIcon';
 
 interface Step3Props {
-  nftData: NftData;
-  setNftData: React.Dispatch<React.SetStateAction<NftData>>;
-  nextStep: () => void;
+  nftData: Omit<NftData, 'id'>;
+  setNftData: React.Dispatch<React.SetStateAction<Omit<NftData, 'id'>>>;
+  onLaunch: (nftData: Omit<NftData, 'id'>) => void;
   setError: (error: string | null) => void;
 }
 
-const Step3SetPrice: React.FC<Step3Props> = ({ nftData, setNftData, nextStep, setError }) => {
+const Step3SetPrice: React.FC<Step3Props> = ({ nftData, setNftData, onLaunch, setError }) => {
   const [price, setPrice] = useState('');
 
   const handleLaunch = () => {
@@ -21,13 +20,24 @@ const Step3SetPrice: React.FC<Step3Props> = ({ nftData, setNftData, nextStep, se
     }
     setError(null);
     
-    // Simulate a cryptographic transaction ID
     const randomBytes = new Uint8Array(20);
     crypto.getRandomValues(randomBytes);
     const transactionId = '0x' + Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
-    setNftData(prev => ({ ...prev, price: priceValue, transactionId }));
-    nextStep();
+    const finalNftData: Omit<NftData, 'id'> = {
+        ...nftData,
+        price: priceValue,
+        transactionId,
+        owner: 'creator',
+        status: 'for_sale',
+        priceHistory: [{
+            date: new Date().toISOString(),
+            price: priceValue,
+            type: 'list'
+        }]
+    };
+    
+    onLaunch(finalNftData);
   };
 
   if (!nftData.imageUrl || !nftData.metadata) {
@@ -42,9 +52,9 @@ const Step3SetPrice: React.FC<Step3Props> = ({ nftData, setNftData, nextStep, se
       </div>
 
       <div className="lg:w-1/2 w-full">
-        <h2 className="text-xl font-bold mb-2">3. Set Your Price</h2>
+        <h2 className="text-xl font-bold mb-2">3. Set Your Price & Launch</h2>
         <p className="text-sm text-gray-400 mb-6">
-          Determine the value of your NFT. This price will be publicly visible on the listing. We'll use ETH as the currency for this simulation.
+          Determine the value of your NFT. This price will be publicly visible on the marketplace. We'll use ETH as the currency for this simulation.
         </p>
         
         <div className="space-y-6">
@@ -73,7 +83,7 @@ const Step3SetPrice: React.FC<Step3Props> = ({ nftData, setNftData, nextStep, se
             onClick={handleLaunch}
             className="w-full flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-brand-pink to-orange-500 hover:opacity-90 text-white font-bold rounded-full text-lg shadow-lg shadow-brand-pink/30 transform hover:scale-105 transition-all duration-300"
           >
-            Launch My NFT! <ChevronRightIcon className="w-5 h-5" />
+            Launch to Marketplace <ChevronRightIcon className="w-5 h-5" />
           </button>
         </div>
       </div>
