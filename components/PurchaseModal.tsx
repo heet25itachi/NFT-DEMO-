@@ -7,11 +7,12 @@ interface PurchaseModalProps {
     onCancel: () => void;
     price: string;
     nftData: NftData;
+    canAfford: boolean;
 }
 
 type ModalStep = 'connect' | 'connecting' | 'confirm';
 
-export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onConfirm, onCancel, price, nftData }) => {
+export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onConfirm, onCancel, price, nftData, canAfford }) => {
     const [step, setStep] = useState<ModalStep>('connect');
 
     const handleConnect = () => {
@@ -56,8 +57,9 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({ onConfirm, onCance
                                 <span className="font-bold text-green-400 text-xl">{price}</span>
                             </div>
                         </div>
-                        <p className="text-xs text-center text-gray-500 py-4">This is a simulated transaction. No funds will be withdrawn.</p>
-                        <button onClick={onConfirm} className="w-full flex items-center justify-center gap-3 p-3 bg-green-600/80 hover:bg-green-600 text-white font-bold rounded-lg transition-colors">
+                         {!canAfford && <p className="text-xs text-center text-red-400 py-2">You have insufficient funds for this transaction.</p>}
+                        <p className="text-xs text-center text-gray-500 py-2">This is a simulated transaction. Funds will be deducted from your simulated wallet balance.</p>
+                        <button onClick={onConfirm} disabled={!canAfford} className="w-full flex items-center justify-center gap-3 p-3 bg-green-600/80 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors">
                             Confirm Purchase
                         </button>
                     </>

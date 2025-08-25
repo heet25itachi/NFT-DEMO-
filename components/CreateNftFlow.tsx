@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { NftData, AppStep } from '../types';
+import { NftData, AppStep, User } from '../types';
 import StepIndicator from './StepIndicator';
 import Step1GenerateImage from './Step1GenerateImage';
 import Step2GenerateMetadata from './Step2GenerateMetadata';
 import Step3SetPrice from './Step3SetPrice';
 
 interface CreateNftFlowProps {
+    currentUser: User;
     onLaunch: (nftData: Omit<NftData, 'id'>) => void;
     onBack: () => void;
 }
 
-const CreateNftFlow: React.FC<CreateNftFlowProps> = ({ onLaunch, onBack }) => {
+const CreateNftFlow: React.FC<CreateNftFlowProps> = ({ currentUser, onLaunch, onBack }) => {
     const [step, setStep] = useState<AppStep>(AppStep.GENERATE_IMAGE);
-    const [nftData, setNftData] = useState<Omit<NftData, 'id'>>({
+    const [nftData, setNftData] = useState<Omit<NftData, 'id' | 'ownerId' | 'creatorId'>>({
         prompt: '',
         imageUrl: null,
         metadata: null,
         price: null,
         transactionId: null,
-        owner: 'creator',
         status: 'for_sale',
         priceHistory: []
     });
@@ -44,10 +44,15 @@ const CreateNftFlow: React.FC<CreateNftFlowProps> = ({ onLaunch, onBack }) => {
                     />
                 );
             case AppStep.SET_PRICE:
+                const completeNftData = {
+                    ...nftData,
+                    ownerId: currentUser.id,
+                    creatorId: currentUser.id,
+                };
                 return (
                     <Step3SetPrice
-                        nftData={nftData}
-                        setNftData={setNftData}
+                        nftData={completeNftData}
+                        currentUser={currentUser}
                         onLaunch={onLaunch}
                         setError={setError}
                     />

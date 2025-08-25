@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import type { NftData } from '../types';
+import type { NftData, User } from '../types';
 import { ChevronRightIcon } from './icons/ChevronRightIcon';
 
 interface Step3Props {
   nftData: Omit<NftData, 'id'>;
-  setNftData: React.Dispatch<React.SetStateAction<Omit<NftData, 'id'>>>;
+  currentUser: User;
   onLaunch: (nftData: Omit<NftData, 'id'>) => void;
   setError: (error: string | null) => void;
 }
 
-const Step3SetPrice: React.FC<Step3Props> = ({ nftData, setNftData, onLaunch, setError }) => {
+const Step3SetPrice: React.FC<Step3Props> = ({ nftData, currentUser, onLaunch, setError }) => {
   const [price, setPrice] = useState('');
 
   const handleLaunch = () => {
@@ -28,12 +28,14 @@ const Step3SetPrice: React.FC<Step3Props> = ({ nftData, setNftData, onLaunch, se
         ...nftData,
         price: priceValue,
         transactionId,
-        owner: 'creator',
+        ownerId: currentUser.id,
+        creatorId: currentUser.id,
         status: 'for_sale',
         priceHistory: [{
             date: new Date().toISOString(),
             price: priceValue,
-            type: 'list'
+            type: 'list',
+            sellerId: currentUser.id,
         }]
     };
     

@@ -6,7 +6,7 @@ import { ChevronRightIcon } from './icons/ChevronRightIcon';
 import { SparklesIcon } from './icons/SparklesIcon';
 
 interface Step1Props {
-  setNftData: React.Dispatch<React.SetStateAction<Omit<NftData, 'id'>>>;
+  setNftData: React.Dispatch<React.SetStateAction<Omit<NftData, 'id' | 'ownerId' | 'creatorId'>>>;
   nextStep: () => void;
   setError: (error: string | null) => void;
 }

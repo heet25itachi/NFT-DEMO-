@@ -5,8 +5,8 @@ import { generateMetadata } from '../services/geminiService';
 import { ChevronRightIcon } from './icons/ChevronRightIcon';
 
 interface Step2Props {
-  nftData: Omit<NftData, 'id'>;
-  setNftData: React.Dispatch<React.SetStateAction<Omit<NftData, 'id'>>>;
+  nftData: Omit<NftData, 'id' | 'ownerId' | 'creatorId'>;
+  setNftData: React.Dispatch<React.SetStateAction<Omit<NftData, 'id' | 'ownerId' | 'creatorId'>>>;
   nextStep: () => void;
   setError: (error: string | null) => void;
 }
