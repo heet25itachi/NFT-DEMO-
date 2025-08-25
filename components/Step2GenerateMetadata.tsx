@@ -94,7 +94,7 @@ const Step2GenerateMetadata: React.FC<Step2Props> = ({ nftData, setNftData, next
                 onClick={nextStep}
                 className="w-full flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-brand-pink to-orange-500 hover:opacity-90 text-white font-bold rounded-full text-lg shadow-lg shadow-brand-pink/30 transform hover:scale-105 transition-all duration-300"
             >
-                Launch My NFT! <ChevronRightIcon className="w-5 h-5" />
+                Next: Set Price <ChevronRightIcon className="w-5 h-5" />
             </button>
           </div>
         )}

@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { NftData, AppStep } from './types';
 import StepIndicator from './components/StepIndicator';
 import Step1GenerateImage from './components/Step1GenerateImage';
 import Step2GenerateMetadata from './components/Step2GenerateMetadata';
-import Step3LaunchSuccess from './components/Step3LaunchSuccess';
+import Step3SetPrice from './components/Step3SetPrice';
+import Step4LaunchSuccess from './components/Step4LaunchSuccess';
 import { SparklesIcon } from './components/icons/SparklesIcon';
 
 const App: React.FC = () => {
@@ -13,11 +13,19 @@ const App: React.FC = () => {
     prompt: '',
     imageUrl: null,
     metadata: null,
+    price: null,
+    transactionId: null,
   });
   const [error, setError] = useState<string | null>(null);
 
   const handleReset = () => {
-    setNftData({ prompt: '', imageUrl: null, metadata: null });
+    setNftData({ 
+        prompt: '', 
+        imageUrl: null, 
+        metadata: null, 
+        price: null,
+        transactionId: null,
+    });
     setStep(AppStep.GENERATE_IMAGE);
     setError(null);
   };
@@ -37,12 +45,21 @@ const App: React.FC = () => {
           <Step2GenerateMetadata
             nftData={nftData}
             setNftData={setNftData}
-            nextStep={() => setStep(AppStep.LAUNCH_SUCCESS)}
+            nextStep={() => setStep(AppStep.SET_PRICE)}
             setError={setError}
           />
         );
+      case AppStep.SET_PRICE:
+        return (
+            <Step3SetPrice
+                nftData={nftData}
+                setNftData={setNftData}
+                nextStep={() => setStep(AppStep.LAUNCH_SUCCESS)}
+                setError={setError}
+            />
+        );
       case AppStep.LAUNCH_SUCCESS:
-        return <Step3LaunchSuccess nftData={nftData} onRestart={handleReset} />;
+        return <Step4LaunchSuccess nftData={nftData} onRestart={handleReset} />;
       default:
         return <div>Invalid step</div>;
     }

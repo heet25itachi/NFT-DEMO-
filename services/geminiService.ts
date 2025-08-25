@@ -1,6 +1,5 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import type { NftMetadata } from "../types";
+import type { NftMetadata, QuizQuestion } from "../types";
 
 const API_KEY = process.env.API_KEY;
 
@@ -83,4 +82,49 @@ export const generateMetadata = async (prompt: string): Promise<NftMetadata> => 
     console.error("Error generating metadata:", error);
     throw new Error("Failed to generate NFT metadata. Please try again.");
   }
+};
+
+export const generateQuiz = async (prompt: string): Promise<QuizQuestion[]> => {
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: `Generate a short, engaging, and challenging 3-question multiple-choice quiz about the lore or subject matter of an NFT based on this prompt: "${prompt}". The questions should not be trivially easy.`,
+            config: {
+                systemInstruction: "You are a creative quiz master for an NFT platform. Create a quiz that tests a user's knowledge about the world suggested by their NFT's concept.",
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        quiz: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    question: { type: Type.STRING },
+                                    options: {
+                                        type: Type.ARRAY,
+                                        items: { type: Type.STRING }
+                                    },
+                                    correctAnswer: { type: Type.STRING },
+                                    explanation: { type: Type.STRING, description: "A brief explanation for why the answer is correct." }
+                                },
+                                required: ["question", "options", "correctAnswer", "explanation"]
+                            }
+                        }
+                    },
+                    required: ["quiz"]
+                },
+            },
+        });
+
+        const jsonStr = response.text.trim();
+        const quizData = JSON.parse(jsonStr) as { quiz: QuizQuestion[] };
+        if (!quizData.quiz || quizData.quiz.length === 0) {
+            throw new Error("AI failed to generate a valid quiz.");
+        }
+        return quizData.quiz;
+    } catch (error) {
+        console.error("Error generating quiz:", error);
+        throw new Error("Failed to generate the NFT quiz. Please try again.");
+    }
 };
